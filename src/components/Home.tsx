@@ -5,6 +5,7 @@ import { getUserProfile } from '../services/authService';
 import Hero from './Hero';
 import LatestUpdates from './LatestUpdates';
 import SocialMediaCarousel from './SocialMediaCarousel';
+import useCountAnimation from '../hooks/useCountAnimation';
 import {
   Book,
   ArrowRight,
@@ -16,7 +17,15 @@ import {
   BookCheck,
   FileText,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Star,
+  CheckCircle2,
+  Zap,
+  Trophy,
+  GraduationCap,
+  Clock,
+  Target,
+  ArrowUpRight
 } from 'lucide-react';
 import bannermobileapp from '/pragraph.png';
 
@@ -34,6 +43,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,7 +56,6 @@ const Home = () => {
         const data = await response.json();
         if (data[0]?.parents) {
           setCategories(data[0].parents);
-          // Set the first category as active by default
           if (data[0].parents.length > 0) {
             setActiveCategory(data[0].parents[0]._id);
           }
@@ -62,7 +71,6 @@ const Home = () => {
     fetchCategories();
   }, []);
 
-  // Call profile API when user is logged in
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (isAuthenticated) {
@@ -70,7 +78,6 @@ const Home = () => {
           console.log('Fetching user profile...');
           const profileData = await getUserProfile();
           console.log('Profile data received:', profileData);
-          // The getUserProfile function already updates localStorage with fresh user data
         } catch (err) {
           console.error('Error fetching user profile:', err);
         }
@@ -88,7 +95,6 @@ const Home = () => {
     setActiveCategory(categoryId);
   };
 
-  // Map category names to colors for visual distinction
   const getCategoryColor = (index: number) => {
     const colors = ['bg-gradient-to-r from-blue-500 to-blue-700',
                    'bg-gradient-to-r from-green-500 to-green-700',
@@ -103,292 +109,281 @@ const Home = () => {
     categoriesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const features = [
+    { 
+      icon: <GraduationCap className="w-12 h-12 text-blue-600 transition-transform duration-300 group-hover:scale-110" />, 
+      title: "Expert-Led Content", 
+      description: "Learn from India's top educators and industry experts",
+      highlight: "500+ Expert Teachers",
+      color: "from-blue-500 to-blue-600"
+    },
+    { 
+      icon: <BrainCircuit className="w-12 h-12 text-purple-600 transition-transform duration-300 group-hover:scale-110" />, 
+      title: "AI-Powered Learning", 
+      description: "Personalized learning paths tailored to your goals",
+      highlight: "Smart Learning System",
+      color: "from-purple-500 to-purple-600"
+    },
+    { 
+      icon: <Target className="w-12 h-12 text-green-600 transition-transform duration-300 group-hover:scale-110" />, 
+      title: "Focused Preparation", 
+      description: "Structured content aligned with exam patterns",
+      highlight: "Exam-Oriented",
+      color: "from-green-500 to-green-600"
+    },
+    { 
+      icon: <Clock className="w-12 h-12 text-orange-600 transition-transform duration-300 group-hover:scale-110" />, 
+      title: "24/7 Learning", 
+      description: "Access study materials anytime, anywhere",
+      highlight: "Always Available",
+      color: "from-orange-500 to-orange-600"
+    }
+  ];
+
   return (
-    <div className="bg-gray-50">
-      
+    <div className="bg-gradient-to-b from-gray-50 to-white">
       <Hero />
 
-      {/* Latest Updates Section with Animation */}
-      <div className="bg-gradient-to-r from-blue-50 to-green-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="bg-gradient-to-r from-blue-100 to-green-100 rounded-lg shadow-lg p-6">
-            <div className="text-center mb-6">
-              <button className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-lg bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 shadow-lg mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m0-4h.01M12 8v4m0 4h.01m-6.938 4H19.938c1.118 0 2.062-.895 2.062-2V6c0-1.105-.944-2-2.062-2H5.062C3.944 4 3 4.895 3 6v12c0 1.105.944 2 2.062 2z" />
-                </svg>
-                Latest Updates
+      {/* Welcome Banner for Authenticated Users */}
+      {isAuthenticated && currentUser?.subCategory && (
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-10" />
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between relative z-10">
+              <div className="flex items-center space-x-4">
+                <div className="bg-white p-3 rounded-full transform transition-transform hover:scale-110 hover:rotate-12">
+                  <GraduationCap className="w-8 h-8 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">Welcome back, {currentUser.name || 'Student'}!</h3>
+                  <p className="text-blue-100">Continue your learning journey</p>
+                </div>
+              </div>
+              <button
+                onClick={() => currentUser?.subCategory && navigate(`/study-materials/${currentUser.subCategory.id}`)}
+                className="mt-4 md:mt-0 group bg-white text-blue-600 px-6 py-3 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg relative overflow-hidden"
+              >
+                <span className="relative z-10">Resume Learning</span>
+                <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-blue-50/30 to-blue-100/30 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
               </button>
             </div>
-            <LatestUpdates />
+          </div>
+        </div>
+      )}
+
+      {/* Statistics Section */}
+      <div className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 p-8 hover:shadow-xl transition-all transform hover:-translate-y-2 group">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500 opacity-10 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" />
+              <div className="flex items-baseline gap-1 mb-4">
+                <div className="text-5xl font-bold text-blue-600 transition-transform duration-300 group-hover:scale-110">
+                  {useCountAnimation(75)}K
+                </div>
+                <div className="text-3xl font-bold text-blue-500">+</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="w-6 h-6 text-blue-600" />
+                <div className="text-blue-900 font-medium">Active Students</div>
+              </div>
+            </div>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 p-8 hover:shadow-xl transition-all transform hover:-translate-y-2 group">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500 opacity-10 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" />
+              <div className="text-4xl font-bold text-purple-600 mb-2 transition-transform duration-300 group-hover:scale-110">1000+</div>
+              <div className="text-purple-900 font-medium">Video Lessons</div>
+              <BookOpen className="absolute bottom-4 right-4 w-8 h-8 text-purple-300 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+            </div>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-50 to-green-100 p-8 hover:shadow-xl transition-all transform hover:-translate-y-2 group">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-green-500 opacity-10 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" />
+              <div className="text-4xl font-bold text-green-600 mb-2 transition-transform duration-300 group-hover:scale-110">95%</div>
+              <div className="text-green-900 font-medium">Success Rate</div>
+              <Trophy className="absolute bottom-4 right-4 w-8 h-8 text-green-300 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+            </div>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 p-8 hover:shadow-xl transition-all transform hover:-translate-y-2 group">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-orange-500 opacity-10 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" />
+              <div className="text-4xl font-bold text-orange-600 mb-2 transition-transform duration-300 group-hover:scale-110">24/7</div>
+              <div className="text-orange-900 font-medium">Expert Support</div>
+              <Award className="absolute bottom-4 right-4 w-8 h-8 text-orange-300 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Enhanced Study Materials Section */}
-      <div ref={categoriesRef} className="py-16 bg-gradient-to-b from-green-50 to-blue-50">
+      {/* Features Section */}
+      <div className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg mx-auto">
-              <Sparkles className="h-6 w-6" />
-              <h2 className="text-xl font-bold">Study Materials</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4 hover:scale-105 transition-transform duration-300">Why Choose AdhyanGuru</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Experience excellence in education with our cutting-edge learning platform</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <div 
+                key={index} 
+                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-2 relative overflow-hidden"
+                onMouseEnter={() => setHoveredFeature(feature.title)}
+                onMouseLeave={() => setHoveredFeature(null)}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-5 transition-opacity duration-500" />
+                <div className="mb-6 relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 rounded-full opacity-20 transform scale-150 group-hover:scale-[2] transition-transform duration-500" />
+                  <div className="relative">{feature.icon}</div>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                <p className="text-gray-600 mb-4 group-hover:text-gray-700 transition-colors">{feature.description}</p>
+                <div className="inline-flex items-center space-x-2">
+                  <div className="inline-block bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium group-hover:bg-gradient-to-r group-hover:from-blue-100 group-hover:to-purple-100 transition-all">
+                    {feature.highlight}
+                  </div>
+                  <ArrowUpRight className={`w-5 h-5 transform transition-all duration-300 ${hoveredFeature === feature.title ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}`} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Latest Updates Section */}
+      <div className="py-20 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50">
+        <div className="container mx-auto px-4">
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 transform transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
+            <div className="text-center p-10 bg-gradient-to-r from-blue-600 to-purple-600 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-10 group-hover:scale-150 transition-transform duration-500" />
+              <h2 className="text-3xl font-bold text-white mb-3 relative z-10">Latest Updates</h2>
+              <p className="text-blue-100 text-lg relative z-10">Stay ahead with our latest educational content and features</p>
             </div>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-              Access comprehensive learning resources designed to enhance your educational journey
+            <div className="p-8 transform transition-transform duration-300 hover:scale-[1.02]">
+              <LatestUpdates />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Study Materials Section */}
+      <div ref={categoriesRef} className="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-white font-semibold text-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg mx-auto transform hover:scale-105 transition-all group cursor-pointer">
+              <Sparkles className="h-7 w-7 transform group-hover:rotate-12 transition-transform" />
+              <h2 className="font-bold">My Notes</h2>
+            </div>
+            <p className="text-xl text-gray-600 mt-6 max-w-3xl mx-auto">
+              Access comprehensive learning resources crafted by expert educators
             </p>
           </div>
 
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-600"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600"></div>
             </div>
           ) : error ? (
-            <div className="text-center bg-red-50 p-8 rounded-lg shadow-md">
-              <div className="text-xl font-medium text-red-600">Error: {error}</div>
+            <div className="text-center bg-red-50 p-10 rounded-2xl shadow-lg">
+              <div className="text-2xl font-medium text-red-600 mb-4">Error: {error}</div>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
+                className="bg-red-600 text-white px-8 py-3 rounded-xl hover:bg-red-700 transition-all transform hover:scale-105"
               >
                 Try Again
               </button>
             </div>
           ) : (
             <div>
-              {/* Categories Tabs */}
-              <div className="flex flex-wrap justify-center mb-10">
-                {categories.map((category, index) => (
-                  <button
-                    key={category._id}
-                    className={`px-6 py-3 m-2 rounded-full font-medium transition-all duration-300 flex items-center ${
-                      activeCategory === category._id
-                        ? `${getCategoryColor(index)} text-white shadow-lg transform scale-105`
-                        : 'bg-white text-gray-700 hover:bg-gray-100 shadow'
-                    }`}
-                    onClick={() => handleCategoryHover(category._id)}
-                    onMouseEnter={() => handleCategoryHover(category._id)}
-                  >
-                    <BookOpen className={`w-5 h-5 mr-2 ${activeCategory === category._id ? 'text-white' : 'text-blue-500'}`} />
-                    <span className="capitalize">{category.name}</span>
-                    {activeCategory === category._id && (
-                      <ChevronRight className="w-5 h-5 ml-1" />
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Featured Category Section */}
-              {activeCategory && (
-                <div className="bg-white rounded-xl shadow-lg p-8 mb-12 transform transition-all duration-500">
-                  <div className="flex flex-col md:flex-row items-center">
-                    <div className="md:w-1/2 mb-6 md:mb-0 md:pr-8">
-                      <h3 className="text-2xl font-bold mb-4 text-gray-800 capitalize">
-                        {categories.find(cat => cat._id === activeCategory)?.name} Resources
-                      </h3>
-                      <p className="text-gray-600 mb-6">
-                        Explore our comprehensive collection of study materials for {categories.find(cat => cat._id === activeCategory)?.name}. 
-                        Our expert-curated content is designed to make learning effective and engaging.
-                      </p>
-                      <button
-                        onClick={() => handleMaterialClick(activeCategory)}
-                        className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        Explore Materials
-                        <ArrowRight className="ml-2 w-5 h-5" />
-                      </button>
-                    </div>
-                    <div className="md:w-1/2">
-                      <div className="aspect-video bg-gradient-to-r from-blue-100 to-green-100 rounded-lg flex items-center justify-center">
-                        <div className="p-6 bg-white rounded-lg shadow-md">
-                          <Book className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-                          <p className="text-center text-gray-700 font-medium">
-                            Click to access all materials
-                          </p>
-                        </div>
+              {isAuthenticated && currentUser?.subCategory ? (
+                <div className="max-w-2xl mx-auto mb-12">
+                  <div className="bg-gradient-to-b from-blue-50 to-white rounded-3xl p-8 relative overflow-hidden">
+                    {/* Background Pattern */}
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJyZ2JhKDU5LDEzMCwyNDYsMC4xKSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9nPjwvc3ZnPg==')] opacity-50" />
+                    
+                    {/* Content */}
+                    <div className="relative">
+                      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Current Subject</h2>
+                      
+                      {/* Subject Card */}
+                      <div className="bg-white rounded-2xl shadow-lg p-1">
+                        <button
+                          onClick={() => currentUser?.subCategory && navigate(`/study-materials/${currentUser.subCategory.id}`)}
+                          className="w-full group relative overflow-hidden"
+                        >
+                          {/* Card Content */}
+                          <div className="flex items-center justify-between p-6">
+                            <div className="flex items-center gap-4">
+                              <div className="p-3 bg-blue-50 rounded-xl">
+                                <BookOpen className="w-6 h-6 text-blue-600" />
+                              </div>
+                              <span className="text-2xl font-bold text-blue-600">
+                                {currentUser?.subCategory?.name}
+                              </span>
+                            </div>
+                            <div className="flex items-center">
+                              <ChevronRight className="w-6 h-6 text-blue-600 transform transition-transform duration-300 group-hover:translate-x-1" />
+                            </div>
+                          </div>
+                          
+                          {/* Hover Effect */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/0 via-blue-50/30 to-blue-50/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
+              ) : null}
 
-              {/* Category Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {categories.map((category, index) => (
-                  <div
-                    key={category._id}
-                    className={`transform transition-all duration-300 ${
-                      activeCategory === category._id ? 'scale-105 z-10' : 'hover:scale-105'
-                    }`}
-                  >
-                    <button
-                      onClick={() => handleMaterialClick(category._id)}
-                      onMouseEnter={() => handleCategoryHover(category._id)}
-                      className={`${
-                        activeCategory === category._id 
-                          ? 'ring-4 ring-blue-300 ring-opacity-50' 
-                          : ''
-                      } bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center w-full h-full`}
-                    >
-                      <div className={`${getCategoryColor(index)} p-4 rounded-full shadow-md`}>
-                        <Book className="w-8 h-8 text-white" />
+              {/* Mobile App Banner */}
+              <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 group hover:shadow-2xl transition-all duration-500">
+                <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 relative">
+                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiIHN0cm9rZS13aWR0aD0iMiIvPjwvZz48L3N2Zz4=')] opacity-10 group-hover:scale-150 transition-transform duration-500" />
+                  <div className="flex flex-col lg:flex-row items-center relative z-10">
+                    <div className="lg:w-1/2 p-12">
+                      <h2 className="text-4xl font-bold text-white mb-6 transform transition-transform duration-300 group-hover:scale-105">Download Our Mobile App</h2>
+                      <p className="text-xl text-blue-100 mb-10">
+                        Take your learning journey to the next level with our feature-rich mobile app. Study anytime, anywhere!
+                      </p>
+                      <div className="flex flex-wrap gap-4 mb-10">
+                        <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-medium flex items-center space-x-3 hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg group">
+                          <Download className="w-6 h-6 transform group-hover:-translate-y-1 transition-transform" />
+                          <span className="text-lg">App Store</span>
+                        </button>
+                        <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-medium flex items-center space-x-3 hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg group">
+                          <Download className="w-6 h-6 transform group-hover:-translate-y-1 transition-transform" />
+                          <span className="text-lg">Google Play</span>
+                        </button>
                       </div>
-                      <h3 className="mt-5 text-xl font-semibold text-gray-800 capitalize">{category.name}</h3>
-                      <div className="mt-4 bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">
-                        FREE Access
-                      </div>
-                      {activeCategory === category._id && (
-                        <div className="mt-3 inline-flex items-center text-blue-600 text-sm font-medium">
-                          Explore <ArrowRight className="w-4 h-4 ml-1" />
+                      <div className="flex items-center space-x-8 text-blue-100">
+                        <div className="flex items-center space-x-2 transform transition-transform hover:scale-105">
+                          <Users className="w-6 h-6" />
+                          <span className="text-lg">75,000+ Students</span>
                         </div>
-                      )}
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-12">
-                <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl shadow-lg overflow-hidden">
-                  <div className="p-6 md:p-8">
-                    <h3 className="text-xl md:text-2xl font-bold mb-4 text-center">
-                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-                        Popular Study Resources
-                      </span>
-                    </h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {/* Study Resource Card 1 */}
-                      <div className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-all duration-300 transform hover:scale-102 border border-gray-100">
-                        <div className="flex items-start space-x-3">
-                          <div className="bg-blue-100 p-2 rounded-lg">
-                            <BookOpen className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-800">NCERT Solutions</h4>
-                            <p className="text-sm text-gray-600 mt-1">Class 6-12 detailed solutions</p>
-                          </div>
+                        <div className="flex items-center space-x-2 transform transition-transform hover:scale-105">
+                          <Star className="w-6 h-6" />
+                          <span className="text-lg">4.8/5 Rating</span>
                         </div>
                       </div>
-
-                      {/* Study Resource Card 2 */}
-                      <div className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-all duration-300 transform hover:scale-102 border border-gray-100">
-                        <div className="flex items-start space-x-3">
-                          <div className="bg-green-100 p-2 rounded-lg">
-                            <FileText className="w-5 h-5 text-green-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-800">Previous Year Papers</h4>
-                            <p className="text-sm text-gray-600 mt-1">Last 10 years with solutions</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Study Resource Card 3 */}
-                      <div className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-all duration-300 transform hover:scale-102 border border-gray-100">
-                        <div className="flex items-start space-x-3">
-                          <div className="bg-purple-100 p-2 rounded-lg">
-                            <Award className="w-5 h-5 text-purple-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-800">Important Questions</h4>
-                            <p className="text-sm text-gray-600 mt-1">Chapter-wise important questions</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Study Resource Card 4 */}
-                      <div className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-all duration-300 transform hover:scale-102 border border-gray-100">
-                        <div className="flex items-start space-x-3">
-                          <div className="bg-orange-100 p-2 rounded-lg">
-                            <BrainCircuit className="w-5 h-5 text-orange-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-800">Concept Maps</h4>
-                            <p className="text-sm text-gray-600 mt-1">Visual learning aids for quick revision</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Study Resource Card 5 */}
-                      <div className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-all duration-300 transform hover:scale-102 border border-gray-100">
-                        <div className="flex items-start space-x-3">
-                          <div className="bg-red-100 p-2 rounded-lg">
-                            <BookCheck className="w-5 h-5 text-red-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-800">Revision Notes</h4>
-                            <p className="text-sm text-gray-600 mt-1">Comprehensive chapter summaries</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Study Resource Card 6 */}
-                      <div className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-all duration-300 transform hover:scale-102 border border-gray-100">
-                        <div className="flex items-start space-x-3">
-                          <div className="bg-teal-100 p-2 rounded-lg">
-                            <Users className="w-5 h-5 text-teal-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-800">Practice Tests</h4>
-                            <p className="text-sm text-gray-600 mt-1">Self-assessment quizzes by chapter</p>
-                          </div>
-                        </div>
-                      </div>
+                    </div>
+                    <div className="lg:w-1/2 p-12">
+                      <img 
+                        src={bannermobileapp} 
+                        alt="Mobile App" 
+                        className="w-full h-auto object-cover rounded-2xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:rotate-2"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           )}
-
-          {/* Call-to-action button */}
-          <div className="text-center mt-10">
-            <button
-              onClick={scrollToCategoriesSection}
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <Book className="w-5 h-5 mr-2" />
-              Browse All Categories
-            </button>
-          </div>
         </div>
       </div>
 
       {/* Social Media Section */}
-      <SocialMediaCarousel />
-
-      {/* Mobile App Banner */}
-      <div className="bg-white py-16">
+      <div className="bg-gradient-to-b from-white to-gray-50 py-20">
         <div className="container mx-auto px-4">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl overflow-hidden shadow-xl">
-            <div className="flex flex-col lg:flex-row items-center">
-              <div className="lg:w-1/2 p-8 lg:p-12">
-                <h2 className="text-3xl font-bold text-white mb-4">Download Our Mobile App</h2>
-                <p className="text-blue-100 mb-6">
-                  Access study materials anytime, anywhere. Our mobile app makes learning on-the-go easier than ever.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-50 transition-colors">
-                    <Download className="w-5 h-5" />
-                    <span>App Store</span>
-                  </button>
-                  <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-50 transition-colors">
-                    <Download className="w-5 h-5" />
-                    <span>Google Play</span>
-                  </button>
-                </div>
-                <div className="mt-6 flex items-center space-x-2 text-blue-100">
-                  <Users className="w-5 h-5" />
-                  <span>Join 50,000+ students already learning</span>
-                </div>
-              </div>
-              <div className="lg:w-1/2">
-                <img 
-                  src={bannermobileapp} 
-                  alt="Mobile App" 
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Connect With Us</h2>
+            <p className="text-xl text-gray-600">Join our growing community of learners</p>
           </div>
+          <SocialMediaCarousel />
         </div>
       </div>
     </div>

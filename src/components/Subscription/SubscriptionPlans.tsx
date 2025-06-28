@@ -29,9 +29,9 @@ const SubscriptionPlans: React.FC = () => {
     };
   }, []);
 
-  const handleSubscription = async (plan: 'monthly' = 'monthly') => {
+  const handleSubscription = async (plan: 'yearly' = 'yearly') => {
     if (!currentUser) {
-      navigate('/login', { state: { returnTo: '/subscription', plan: 'monthly' } });
+      navigate('/login', { state: { returnTo: '/subscription', plan: 'yearly' } });
       return;
     }
 
@@ -40,14 +40,21 @@ const SubscriptionPlans: React.FC = () => {
       setError('');
       
       // Create an order with the selected plan
-      const orderData = await createSubscriptionOrder('monthly');
+      const orderData = await createSubscriptionOrder('yearly').catch(err => {
+        console.error('Error creating Razorpay order:', err.response?.data || err);
+        throw new Error(err.response?.data?.error?.description || 'Failed to create order');
+      });
       
+      if (!orderData) {
+        throw new Error('Failed to create order - no order data received');
+      }
+
       const options = {
-        key: orderData.key_id, // Razorpay Key ID - using rzp_test_BDT2TegS4Ax6Vp
+        key: 'rzp_test_EZUuxiOqrDJuQ4', // Razorpay Key ID
         amount: 49900, // Set amount to 499 INR (in paise)
-        currency: orderData.currency,
+        currency: 'INR', // Force INR as currency
         name: "Vidyavani ",
-        description: "Monthly Subscription",
+        description: "Yearly Subscription",
         order_id: orderData.orderId,
         prefill: {
           name: orderData.user.name,

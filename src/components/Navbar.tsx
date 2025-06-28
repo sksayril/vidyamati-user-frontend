@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, ChevronDown, BookOpen, BrainCircuit, Newspaper, Home, BookOpenCheck, FileText, History, User, Search, MessageSquare, Bell, ShoppingCart, BookText, Folder } from 'lucide-react';
+import { Menu, X, ChevronDown, BookOpen, BrainCircuit, Newspaper, Home, BookOpenCheck, FileText, History, User, Search, MessageSquare, Bell, ShoppingCart, BookText, Folder, Brain } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import type { Category, CategoryResponse, SubCategory, SubCategoryResponse } from '../types/category';
 import { useAuth } from '../contexts/AuthContext';
@@ -20,11 +20,31 @@ const Navbar = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
 
+  // Custom Chat Home Icon component
+  const ChatHomeIcon = ({ size, className }: { size: number, className?: string }) => (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <circle cx="12" cy="11" r="3" />
+      <path d="M12 14v4" />
+    </svg>
+  );
+
   // Mobile bottom navigation items
   const mobileNavItems = [
-    { icon: Home, label: 'Home', path: '/' },
-    { icon: BookOpenCheck, label: 'Quiz', path: '/quiz' },
+    { icon: Home, label: 'Home', path: '/home' },
     { icon: Newspaper, label: 'Blogs', path: '/blog' },
+    { icon: Brain, label: 'Chat with AI', path: '/aichat' },
+    { icon: ShoppingCart, label: 'Subscription', path: '/subscription/status' },
   ];
 
   // Fetch categories from API
@@ -84,6 +104,12 @@ const Navbar = () => {
     });
   };
 
+  const handleSubjectClick = (subCategoryId: string, subCategoryName: string) => {
+    // Navigate to study materials for the selected subject/subcategory
+    // This will trigger the StudyMaterials component to fetch subcategories from the API
+    navigate(`/study-materials/${subCategoryId}`);
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -134,7 +160,13 @@ const Navbar = () => {
                   <div className="w-px h-4 bg-blue-300"></div>
                   <div className="flex items-center space-x-1">
                     <span className="text-xs font-medium text-green-700">Subject:</span>
-                    <span className="text-sm font-semibold text-green-800">{currentUser.subCategory.name}</span>
+                    <button 
+                      onClick={() => currentUser?.subCategory && handleSubjectClick(currentUser.subCategory.id, currentUser.subCategory.name)}
+                      className="text-sm font-semibold text-green-800 hover:text-green-600 hover:underline transition-colors cursor-pointer"
+                      title={`Click to access ${currentUser?.subCategory?.name} study materials`}
+                    >
+                      {currentUser.subCategory.name}
+                    </button>
                   </div>
                 </div>
               )}
@@ -172,13 +204,13 @@ const Navbar = () => {
 
               {/* Desktop Navigation Links */}
               <Link
-                to="/"
+                to="/aichat"
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 flex items-center ${
-                  location.pathname === '/' ? 'text-blue-600' : 'text-sky-700 hover:text-blue-600'
+                  location.pathname === '/aichat' ? 'text-blue-600 bg-blue-50' : 'text-sky-700 hover:text-blue-600 hover:bg-blue-50'
                 }`}
               >
-                <Home size={18} className="mr-1" />
-                <span>Home</span>
+                <Brain size={18} className="mr-1" />
+                <span>Chat with AI</span>
               </Link>
               
               <Link
@@ -252,7 +284,16 @@ const Navbar = () => {
                       <div className="text-xs font-medium text-gray-800">{currentUser?.name}</div>
                       {currentUser?.parentCategory && currentUser?.subCategory && (
                         <div className="text-xs text-gray-500">
-                          {currentUser.parentCategory.name} • {currentUser.subCategory.name}
+                          {currentUser.parentCategory.name} • 
+                          <button 
+                            onClick={() => {
+                              currentUser?.subCategory && handleSubjectClick(currentUser.subCategory.id, currentUser.subCategory.name);
+                            }}
+                            className="ml-1 hover:text-blue-500 hover:underline transition-colors cursor-pointer"
+                            title={`Click to access ${currentUser?.subCategory?.name} study materials`}
+                          >
+                            {currentUser.subCategory.name}
+                          </button>
                         </div>
                       )}
                     </div>
@@ -271,7 +312,17 @@ const Navbar = () => {
                         )}
                         {currentUser?.subCategory && (
                           <div className="text-xs text-green-600">
-                            <span className="font-medium">Subject:</span> {currentUser.subCategory.name}
+                            <span className="font-medium">Subject:</span> 
+                            <button 
+                              onClick={() => {
+                                currentUser?.subCategory && handleSubjectClick(currentUser.subCategory.id, currentUser.subCategory.name);
+                                setIsUserDropdownOpen(false);
+                              }}
+                              className="ml-1 hover:text-green-500 hover:underline transition-colors cursor-pointer"
+                              title={`Click to access ${currentUser?.subCategory?.name} study materials`}
+                            >
+                              {currentUser.subCategory.name}
+                            </button>
                           </div>
                         )}
                       </div>
@@ -340,11 +391,10 @@ const Navbar = () => {
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-xl font-bold">
                     <span className="text-blue-600">Vidyavani </span>
-                    
                   </span>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-lg hover:bg-sky-100 text-sky-600"
+                    className="p-2 rounded-lg hover:bg-sky-100 text-sky-600"
                   >
                     <X size={20} />
                   </button>
@@ -352,18 +402,60 @@ const Navbar = () => {
 
                 {/* User Category Display for Mobile */}
                 {isAuthenticated && currentUser?.parentCategory && currentUser?.subCategory && (
-                  <div className="mb-6 p-3 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
-                    <div className="text-center">
-                      <div className="text-xs font-medium text-gray-600 mb-1">Your Study Profile</div>
-                      <div className="flex items-center justify-center space-x-3">
-                        <div className="flex items-center space-x-1">
-                          <span className="text-xs font-medium text-blue-700">Category:</span>
-                          <span className="text-sm font-semibold text-blue-800">{currentUser.parentCategory.name}</span>
+                  <div className="mb-6 overflow-hidden">
+                    <div className="relative p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+                      {/* Subject Header */}
+                      <div className="flex items-center space-x-2 mb-3">
+                        <div className="w-1 h-6 bg-green-600 rounded-full"></div>
+                        <div className="text-base font-semibold text-gray-800">Subject</div>
+                      </div>
+
+                      {/* Main Subject Display */}
+                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4">
+                        <div className="flex items-start">
+                          <div className="flex-1">
+                            <div className="text-2xl font-bold text-gray-800">{currentUser.subCategory.name}</div>
+                            <div className="mt-1 text-sm text-gray-500">{currentUser.parentCategory.name}</div>
+                            <button 
+                              onClick={() => {
+                                if (currentUser?.subCategory) {
+                                  handleSubjectClick(currentUser.subCategory.id, currentUser.subCategory.name);
+                                  setIsMobileMenuOpen(false);
+                                }
+                              }}
+                              className="mt-3 inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors group"
+                            >
+                              View Materials
+                              <ChevronDown size={16} className="ml-1 transform group-hover:translate-x-1 transition-transform duration-200" />
+                            </button>
+                          </div>
+                          <div className="ml-4">
+                            <div className="p-2 bg-white rounded-lg shadow-sm">
+                              <BookText size={24} className="text-green-600" />
+                            </div>
+                          </div>
                         </div>
-                        <div className="w-px h-4 bg-blue-300"></div>
-                        <div className="flex items-center space-x-1">
-                          <span className="text-xs font-medium text-green-700">Subject:</span>
-                          <span className="text-sm font-semibold text-green-800">{currentUser.subCategory.name}</span>
+                      </div>
+
+                      {/* Quick Stats */}
+                      <div className="mt-4 grid grid-cols-2 gap-3">
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="text-xs text-gray-500">Chapters</div>
+                              <div className="text-lg font-bold text-gray-800">12</div>
+                            </div>
+                            <BookOpen size={18} className="text-green-600" />
+                          </div>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="text-xs text-gray-500">Topics</div>
+                              <div className="text-lg font-bold text-gray-800">48</div>
+                            </div>
+                            <FileText size={18} className="text-green-600" />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -372,6 +464,24 @@ const Navbar = () => {
 
                 {/* Mobile Action Buttons */}
                 <div className="space-y-3 mb-6">
+                  {isAuthenticated && currentUser?.subCategory && (
+                    <div className="mb-2 flex items-center justify-center">
+                      <span className="text-xs font-medium text-green-700 mr-1">Subject:</span>
+                      <button
+                        onClick={() => currentUser?.subCategory && handleSubjectClick(currentUser.subCategory.id, currentUser.subCategory.name)}
+                        className="text-sm font-semibold text-green-800 hover:text-green-600 hover:underline transition-colors cursor-pointer px-2 py-1 rounded"
+                        title={`Go to ${currentUser?.subCategory?.name} study materials`}
+                      >
+                        {currentUser?.subCategory?.name}
+                      </button>
+                    </div>
+                  )}
+                  <MobileNavButton
+                    to="/home"
+                    icon={Home}
+                    text="Home"
+                    gradient="bg-gradient-to-r from-blue-500 to-indigo-500"
+                  />
                   <MobileNavButton
                     to="/blog"
                     icon={Newspaper}
@@ -379,125 +489,99 @@ const Navbar = () => {
                     gradient="bg-gradient-to-r from-purple-500 to-pink-500"
                   />
                   <MobileNavButton
-                    to="/quiz"
-                    icon={BrainCircuit}
-                    text="Quiz"
-                    gradient="bg-gradient-to-r from-orange-500 to-red-500"
+                    to="/subscription/status"
+                    icon={ShoppingCart}
+                    text="Subscription"
+                    gradient="bg-gradient-to-r from-green-500 to-teal-500"
                   />
                 </div>
 
-                {/* Mobile Categories */}
-              <div className="mb-6">
-                <h3 className="text-xs font-semibold text-sky-500 uppercase tracking-wider mb-2 px-2">
-                  Study Categories
-                  </h3>
-                <div className="space-y-1">
-                  {isLoading ? (
-                    <div className="flex items-center px-2 py-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                      <span className="ml-2 text-sm text-gray-500">Loading categories...</span>
+                {/* Authentication Links for Mobile */}
+                {isAuthenticated ? (
+                  <div className="border-t border-sky-100 pt-4">
+                    <div className="px-2 py-3">
+                      <div className="font-medium text-gray-800">{currentUser?.name}</div>
+                      <div className="text-xs text-gray-500">{currentUser?.email}</div>
+                      {currentUser?.parentCategory && (
+                        <div className="text-xs text-blue-600 mt-1">
+                          <span className="font-medium">Category:</span> {currentUser.parentCategory.name}
+                        </div>
+                      )}
+                      {currentUser?.subCategory && (
+                        <div className="text-xs text-green-600">
+                          <span className="font-medium">Subject:</span> 
+                          <button 
+                            onClick={() => currentUser?.subCategory && handleSubjectClick(currentUser.subCategory.id, currentUser.subCategory.name)}
+                            className="ml-1 hover:text-green-500 hover:underline transition-colors cursor-pointer"
+                            title={`Click to access ${currentUser?.subCategory?.name} study materials`}
+                          >
+                            {currentUser.subCategory.name}
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  ) : error ? (
-                    <div className="px-2 py-2 text-sm text-red-500">
-                      Failed to load categories
-                    </div>
-                  ) : (
-                    categories.map((category) => (
-                        <button
-                        key={category._id}
-                        onClick={() => handleCategoryClick(category._id, category.name)}
-                        className="flex items-center justify-between w-full px-2 py-2 text-sm text-gray-700 hover:bg-sky-50 hover:text-blue-600 rounded-md capitalize"
-                        >
-                        <span className="flex items-center">
-                          <BookOpen size={16} className="mr-2 text-sky-500" />
-                          {category.name}
-                        </span>
-                        <ChevronDown size={14} className="text-gray-400" />
-                              </button>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* Authentication Links for Mobile */}
-              {isAuthenticated ? (
-                <div className="border-t border-sky-100 pt-4">
-                  <div className="px-2 py-3">
-                    <div className="font-medium text-gray-800">{currentUser?.name}</div>
-                    <div className="text-xs text-gray-500">{currentUser?.email}</div>
-                    {currentUser?.parentCategory && (
-                      <div className="text-xs text-blue-600 mt-1">
-                        <span className="font-medium">Category:</span> {currentUser.parentCategory.name}
-                      </div>
-                    )}
-                    {currentUser?.subCategory && (
-                      <div className="text-xs text-green-600">
-                        <span className="font-medium">Subject:</span> {currentUser.subCategory.name}
-                      </div>
-                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Logout
+                    </button>
                   </div>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center w-full px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="border-t border-sky-100 pt-4">
-                  <Link
-                    to="/login"
-                    className="flex items-center px-2 py-2 text-sm text-blue-600 hover:bg-sky-50 rounded-md"
-                  >
-                    <User size={16} className="mr-2" />
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="flex items-center px-2 py-2 text-sm text-blue-600 hover:bg-sky-50 rounded-md"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                    </svg>
-                    Register
-                  </Link>
-                </div>
-              )}
+                ) : (
+                  <div className="border-t border-sky-100 pt-4">
+                    <Link
+                      to="/login"
+                      className="flex items-center px-2 py-2 text-sm text-blue-600 hover:bg-sky-50 rounded-md"
+                    >
+                      <User size={16} className="mr-2" />
+                      Login
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="flex items-center px-2 py-2 text-sm text-blue-600 hover:bg-sky-50 rounded-md"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                      </svg>
+                      Register
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+     
       </nav>
 
       {/* Bottom Mobile Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-sky-100 flex justify-around p-2 md:hidden z-40">
-        {mobileNavItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-            className={`flex flex-col items-center justify-center py-1 px-3 rounded-lg ${
-              location.pathname === item.path
-                ? 'text-blue-600 bg-sky-50'
-                : 'text-gray-500 hover:text-gray-800'
-            }`}
-          >
-            <item.icon size={20} />
-            <span className="text-xs mt-1">{item.label}</span>
-          </Link>
-        ))}
-        
-        {/* Add subscription status indicator */}
-        <Link
-          to="/subscription/status"
-          className="flex flex-col items-center justify-center py-1 px-3 rounded-lg text-gray-500 hover:text-gray-800"
-        >
-          <Bell size={20} />
-          <span className="text-xs mt-1">
-            {isContentLocked ? 'Upgrade' : 'Subscribed'}
-                </span>
-              </Link>
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-40">
+        <div className="max-w-md mx-auto">
+          <div className="grid grid-cols-4 gap-1 p-2">
+            {mobileNavItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 ${
+                    isActive 
+                      ? 'text-blue-600 bg-blue-50' 
+                      : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <item.icon size={20} className={`${isActive ? 'text-blue-600' : 'text-gray-600'} transition-colors duration-200`} />
+                  <span className="text-xs mt-1 font-medium">{item.label}</span>
+                  {isActive && (
+                    <div className="absolute bottom-1 w-1 h-1 rounded-full bg-blue-600" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Styles for animations */}

@@ -32,13 +32,38 @@ export interface SubscriptionStatus {
 }
 
 // Create subscription order
-export const createSubscriptionOrder = async (plan: 'monthly' | 'yearly' = 'monthly'): Promise<SubscriptionOrder> => {
-  const response = await axios.post(
-    `${API_URL}/users/subscription/create-order`, 
-    { plan }, 
-    { headers: authHeader() }
-  );
-  return response.data;
+export const createSubscriptionOrder = async (plan: 'monthly' | 'yearly' = 'yearly'): Promise<SubscriptionOrder> => {
+  try {
+    // Get the auth token
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await axios.post(
+      `${API_URL}/users/subscription/create-order`, 
+      { 
+        plan,
+        amount: 49900, // 499 INR in paise
+        currency: 'INR'
+      }, 
+      { 
+        headers: {
+          ...authHeader(),
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!response.data) {
+      throw new Error('No data received from order creation');
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Order creation error:', error.response?.data || error);
+    throw error;
+  }
 };
 
 // Verify payment after subscription payment

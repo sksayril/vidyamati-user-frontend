@@ -897,7 +897,7 @@ const StudyMaterials = () => {
               </div>
               
               {/* Parent Categories */}
-              {!isLoading && parentCategories.length > 0 && (
+              {/* {!isLoading && parentCategories.length > 0 && (
                 <div className="mb-6">
                   <h3 className="text-blue-700 font-semibold text-sm tracking-wide flex items-center mb-2 px-2">
                     <FolderOpen className="w-4 h-4 mr-2" />
@@ -916,7 +916,7 @@ const StudyMaterials = () => {
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
               
               {/* Subcategories */}
               {isLoading ? (

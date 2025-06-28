@@ -10,6 +10,8 @@ import Register from './components/Auth/Register';
 import SubscriptionPlans from './components/Subscription/SubscriptionPlans';
 import SubscriptionStatus from './components/Subscription/SubscriptionStatus';
 import TestContentLock from './components/Subscription/TestContentLock';
+import AIChat from './components/AIChat/AIChat';
+import ProtectedRoute from './components/ProtectedRoute';
 import { ContentProtectionProvider } from './contexts/ContentProtectionContext';
 
 function App() {
@@ -26,6 +28,11 @@ function App() {
         <div className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/aichat" element={
+              <ProtectedRoute>
+                <AIChat />
+              </ProtectedRoute>
+            } />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/study-materials/:categoryId?" element={<StudyMaterials />} />
