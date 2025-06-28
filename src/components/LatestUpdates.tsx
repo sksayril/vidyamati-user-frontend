@@ -16,7 +16,7 @@ const LatestUpdates = () => {
     const fetchUpdates = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/latest-updates');
+        const response = await fetch('https://api.vidyavani.com/api/latest-updates');
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

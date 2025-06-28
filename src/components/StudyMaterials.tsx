@@ -88,7 +88,7 @@ const StudyMaterials = () => {
   // Ref for top of page scrolling
   const pageTopRef = useRef<HTMLDivElement>(null);
 
-  const API_URL = 'https://7cvccltb-3330.inc1.devtunnels.ms/api';
+  const API_URL = 'https://api.vidyavani.com/api';
 
   // Wrap scrollToTop in useCallback to avoid dependency issues in useEffect
   const scrollToTop = useCallback(() => {

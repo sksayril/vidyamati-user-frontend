@@ -38,7 +38,7 @@ const Blog = () => {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/get/blogs');
+        const response = await fetch('https://api.vidyavani.com/api/get/blogs');
         
         if (!response.ok) {
           throw new Error('Failed to fetch blogs');

@@ -11,7 +11,7 @@ const NotificationBanner = () => {
     const fetchSponsorData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/getsponser');
+        const response = await fetch('https://api.vidyavani.com/api/getsponser');
         
         if (!response.ok) {
           throw new Error('Failed to fetch sponsor data');

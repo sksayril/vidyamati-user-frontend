@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://7cvccltb-3330.inc1.devtunnels.ms/api';
+const API_URL = 'https://api.vidyavani.com/api';
 
 // Define user and auth types
 export interface User {

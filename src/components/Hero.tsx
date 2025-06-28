@@ -19,7 +19,7 @@ const Hero = () => {
     const fetchBanners = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/get/hero-banners');
+        const response = await fetch('https://api.vidyavani.com/api/get/hero-banners');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch banners: ${response.status}`);

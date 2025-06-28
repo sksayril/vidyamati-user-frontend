@@ -50,7 +50,7 @@ const Register: React.FC = () => {
       try {
         setCategoriesLoading(true);
         setCategoriesError(null);
-        const response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/categories/parents');
+        const response = await fetch('https://api.vidyavani.com/api/categories/parents');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch categories: ${response.status}`);
@@ -95,7 +95,7 @@ const Register: React.FC = () => {
           return;
         }
 
-        const response = await fetch(`https://7cvccltb-3330.inc1.devtunnels.ms/api/categories/subcategories/${selectedCat._id}`);
+        const response = await fetch(`https://api.vidyavani.com/api/categories/subcategories/${selectedCat._id}`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch subcategories: ${response.status}`);

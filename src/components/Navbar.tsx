@@ -53,7 +53,7 @@ const Navbar = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/categories/parents');
+        const response = await fetch('https://api.vidyavani.com/api/categories/parents');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch categories: ${response.status}`);

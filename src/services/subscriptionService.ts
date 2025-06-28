@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { authHeader } from './authService';
 
-const API_URL = 'https://7cvccltb-3330.inc1.devtunnels.ms/api';
+const API_URL = 'https://api.vidyavani.com/api';
 
 // Types
 export interface SubscriptionOrder {

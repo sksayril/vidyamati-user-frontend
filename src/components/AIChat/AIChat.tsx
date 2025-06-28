@@ -147,7 +147,7 @@ const AIChat = () => {
         throw new Error('Authentication token not found');
       }
 
-      const response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/chat/history', {
+      const response = await fetch('https://api.vidyavani.com/api/chat/history', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -179,7 +179,7 @@ const AIChat = () => {
         throw new Error('Authentication token not found');
       }
 
-      const response = await fetch(`https://7cvccltb-3330.inc1.devtunnels.ms/api/chat/${chatId}`, {
+      const response = await fetch(`https://api.vidyavani.com/api/chat/${chatId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -302,7 +302,7 @@ const AIChat = () => {
       let response;
       if (currentChat) {
         // Continue existing chat
-        response = await fetch(`https://7cvccltb-3330.inc1.devtunnels.ms/api/chat/${currentChat.id}/message`, {
+        response = await fetch(`https://api.vidyavani.com/api/chat/${currentChat.id}/message`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -311,7 +311,7 @@ const AIChat = () => {
         });
       } else {
         // Start new chat
-        response = await fetch('https://7cvccltb-3330.inc1.devtunnels.ms/api/chat/start', {
+        response = await fetch('https://api.vidyavani.com/api/chat/start', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
