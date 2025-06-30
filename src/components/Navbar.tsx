@@ -3,6 +3,7 @@ import { Menu, X, ChevronDown, BookOpen, BrainCircuit, Newspaper, Home, BookOpen
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import type { Category, CategoryResponse, SubCategory, SubCategoryResponse } from '../types/category';
 import { useAuth } from '../contexts/AuthContext';
+import logo from "../../public/logo.png";
 import { useContentProtection } from '../contexts/ContentProtectionContext';
 
 const Navbar = () => {
@@ -41,7 +42,7 @@ const Navbar = () => {
 
   // Mobile bottom navigation items
   const mobileNavItems = [
-    { icon: Home, label: 'Home', path: '/home' },
+    { icon: Home, label: 'Home', path: '/' },
     { icon: Newspaper, label: 'Blogs', path: '/blog' },
     { icon: Brain, label: 'Chat with AI', path: '/aichat' },
     { icon: ShoppingCart, label: 'Subscription', path: '/subscription/status' },
@@ -142,7 +143,9 @@ const Navbar = () => {
               </button>
               <Link to="/" className="flex items-center">
                 <span className="text-2xl font-bold">
-                  <span className="text-blue-600">Vidyavani </span>
+                  <span className="text-blue-600">
+                  <img src={logo} alt="Vidyavani Logo" className="w-50 h-10  pl-4" /> 
+                  </span>
                   
                 </span>
               </Link>
@@ -477,7 +480,7 @@ const Navbar = () => {
                     </div>
                   )}
                   <MobileNavButton
-                    to="/home"
+                    to="/"
                     icon={Home}
                     text="Home"
                     gradient="bg-gradient-to-r from-blue-500 to-indigo-500"
