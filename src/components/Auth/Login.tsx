@@ -31,7 +31,12 @@ const Login: React.FC = () => {
       setError('');
       setLoading(true);
       await login(email, password);
-      navigate(from); // Redirect to the intended destination
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (user && user.subCategory && user.subCategory.id) {
+        navigate(`/study-materials/${user.subCategory.id}`);
+      } else {
+        navigate(from);
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to log in');
     } finally {

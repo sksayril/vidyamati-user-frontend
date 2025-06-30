@@ -159,7 +159,12 @@ const Register: React.FC = () => {
 
       // Use the AuthContext register function which handles registration and automatic login
       await register(name, email, password, phone, selectedCat._id, selectedSubCat._id);
-      navigate('/'); // Redirect to home after successful registration
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (user && user.subCategory && user.subCategory.id) {
+        navigate(`/study-materials/${user.subCategory.id}`);
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to create an account');
     } finally {

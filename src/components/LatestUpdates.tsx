@@ -1,15 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, Clock, X, ArrowRight } from 'lucide-react';
 
+interface Update {
+  _id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  date: string;
+  readTime?: string;
+  isTop?: boolean;
+  content?: string;
+}
+
 const LatestUpdates = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedUpdate, setSelectedUpdate] = useState(null);
-  const scrollRef = useRef(null);
-  const autoPlayRef = useRef(null);
+  const [selectedUpdate, setSelectedUpdate] = useState<Update | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const autoPlayRef = useRef<number | null>(null);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
-  const [updates, setUpdates] = useState([]);
+  const [updates, setUpdates] = useState<Update[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch updates from API
   useEffect(() => {
@@ -25,7 +36,7 @@ const LatestUpdates = () => {
         const result = await response.json();
         
         // Sort updates to prioritize isTop:true items
-        const sortedUpdates = (result.data || []).sort((a, b) => {
+        const sortedUpdates = (result.data || []).sort((a: Update, b: Update) => {
           // If a is top and b is not, a comes first
           if (a.isTop && !b.isTop) return -1;
           // If b is top and a is not, b comes first
@@ -177,19 +188,11 @@ const LatestUpdates = () => {
   }
 
   return (
-    <div className="py-8 md:py-12 bg-white">
+    <div className="relative">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-6 md:mb-8">
-          <div className="flex space-x-4 md:space-x-6">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
-              LATEST UPDATES
-            </h2>
-          </div>
-        </div>
-
         <div className="relative">
           <div
-            className="flex space-x-4 md:space-x-6 overflow-x-auto pb-6 hide-scrollbar scroll-smooth"
+            className="flex space-x-6 md:space-x-8 overflow-x-auto pb-6 hide-scrollbar scroll-smooth"
             ref={scrollRef}
             onMouseEnter={() => setIsAutoPlay(false)}
             onMouseLeave={() => setIsAutoPlay(true)}
@@ -197,49 +200,87 @@ const LatestUpdates = () => {
             {updates.map((update, index) => (
               <div
                 key={update._id}
-                className={`min-w-[280px] md:min-w-[300px] bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
-                  index === activeIndex ? 'ring-2 ring-blue-500 scale-102' : ''
+                className={`group min-w-[320px] md:min-w-[380px] bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:-translate-y-3 hover:shadow-3xl cursor-pointer relative ${
+                  index === activeIndex ? 'ring-4 ring-blue-500/30 scale-105' : ''
                 }`}
                 onClick={() => openUpdateModal(update)}
               >
-                {/* Use the same vertical layout for both mobile and desktop */}
-                <div className="relative">
+                {/* Gradient Border Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10"></div>
+                
+                {/* Image Section with Enhanced Effects */}
+                <div className="relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
                   <img
                     src={update.image}
                     alt={update.title}
-                    className="w-full h-40 md:h-48 object-cover"
+                    className="w-full h-48 md:h-56 object-cover transform transition-transform duration-700 group-hover:scale-110"
                   />
+                  
+                  {/* Premium Badges */}
                   {update.isTop && (
-                    <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-red-600 text-white text-xs font-medium px-2 py-0.5 md:py-1 rounded-full">
-                      TOP
+                    <div className="absolute top-4 left-4 z-20">
+                      <div className="bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-sm">
+                        <span className="flex items-center gap-1">
+                          ⭐ TOP
+                        </span>
+                      </div>
                     </div>
                   )}
+                  
                   {index === activeIndex && (
-                    <div className="absolute top-2 right-2 md:top-3 md:right-3 bg-blue-600 text-white text-xs font-medium px-2 py-0.5 md:py-1 rounded-full">
-                      NEW
+                    <div className="absolute top-4 right-4 z-20">
+                      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-sm animate-pulse">
+                        ✨ NEW
+                      </div>
                     </div>
                   )}
+                  
+                  {/* Floating Action Button */}
+                  <div className="absolute bottom-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <div className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-colors">
+                      <ArrowRight className="w-5 h-5 text-blue-600" />
+                    </div>
+                  </div>
                 </div>
-                <div className="p-3 md:p-5">
-                  <div className="flex items-center space-x-2 mb-2 md:mb-3">
-                    <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 md:px-2.5 md:py-0.5 rounded-full">
+
+                {/* Content Section with Premium Styling */}
+                <div className="p-6 md:p-8 relative">
+                  {/* Background Pattern */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-transparent rounded-full opacity-50 transform translate-x-16 -translate-y-16"></div>
+                  
+                  {/* Tags and Meta Info */}
+                  <div className="flex items-center space-x-3 mb-4">
+                    <span className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 text-sm font-semibold px-4 py-2 rounded-full shadow-sm">
                       Study Material
                     </span>
-                    <span className="text-gray-400 text-xs">•</span>
-                    <span className="text-gray-500 text-xs flex items-center">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {update.readTime || '5 min read'}
-                    </span>
-                  </div>
-                  <h3 className="text-sm md:text-lg font-bold mb-1 md:mb-2 text-gray-800 line-clamp-2">{update.title}</h3>
-                  <p className="text-gray-600 text-xs md:text-sm mb-2 md:mb-4 line-clamp-2">{update.subtitle}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-gray-500 text-xs">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      <span>{update.date}</span>
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <Clock className="w-4 h-4 mr-2" />
+                      {update.readTime || '10 min read'}
                     </div>
-                    <button className="text-blue-600 font-medium text-xs md:text-sm hover:text-blue-700 transition-colors">
-                      Read More
+                  </div>
+                  
+                  {/* Title with Better Typography */}
+                  <h3 className="text-xl md:text-2xl font-bold mb-3 text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-700 transition-colors">
+                    {update.title}
+                  </h3>
+                  
+                  {/* Subtitle */}
+                  <p className="text-gray-600 text-base mb-6 leading-relaxed line-clamp-3">
+                    {update.subtitle}
+                  </p>
+                  
+                  {/* Footer with Enhanced Design */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <Calendar className="w-4 h-4 mr-2 text-blue-500" />
+                      <span className="font-medium">{update.date}</span>
+                    </div>
+                    <button className="group/btn bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-2 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                      <span className="flex items-center gap-2">
+                        Read More
+                        <ArrowRight className="w-4 h-4 transform transition-transform group-hover/btn:translate-x-1" />
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -250,20 +291,20 @@ const LatestUpdates = () => {
           {updates.length > 1 && (
             <>
               <button
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-1 md:p-2 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-colors z-10"
+                className="absolute -left-6 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-full shadow-2xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover:scale-110 z-20 backdrop-blur-sm"
                 onClick={handlePrevious}
               >
-                <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
+                <ChevronLeft className="w-6 h-6" />
               </button>
               <button
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-1 md:p-2 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-colors z-10"
+                className="absolute -right-6 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-full shadow-2xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover:scale-110 z-20 backdrop-blur-sm"
                 onClick={handleNext}
               >
-                <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+                <ChevronRight className="w-6 h-6" />
               </button>
 
-              {/* Indicator dots */}
-              <div className="flex justify-center mt-4 md:mt-6 space-x-2">
+              {/* Premium Indicator dots */}
+              <div className="flex justify-center mt-8 space-x-4">
                 {updates.map((_, index) => (
                   <button
                     key={index}
@@ -276,7 +317,7 @@ const LatestUpdates = () => {
                       }, 10000);
 
                       if (scrollRef.current) {
-                        const selectedCard = scrollRef.current.children[index];
+                        const selectedCard = scrollRef.current.children[index] as HTMLElement;
                         if (selectedCard) {
                           scrollRef.current.scrollTo({
                             left: selectedCard.offsetLeft - 20,
@@ -285,8 +326,10 @@ const LatestUpdates = () => {
                         }
                       }
                     }}
-                    className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-300 ${
-                      index === activeIndex ? 'bg-blue-600 scale-125' : 'bg-gray-300 hover:bg-gray-400'
+                    className={`transition-all duration-300 ${
+                      index === activeIndex 
+                        ? 'w-12 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-lg transform scale-110' 
+                        : 'w-4 h-4 bg-gray-300 rounded-full hover:bg-gray-400 hover:scale-110'
                     }`}
                   ></button>
                 ))}

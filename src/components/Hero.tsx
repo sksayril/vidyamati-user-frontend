@@ -1,296 +1,340 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, ChevronLeft, ChevronRight, Award } from 'lucide-react';
+import { Play, ArrowRight, CheckCircle, Users, BookOpen, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import NotificationBanner from './NotificationBanner'; // Import the new component
+import NotificationBanner from './NotificationBanner';
 
 const Hero = () => {
-  const [currentImage, setCurrentImage] = useState(0);
-  const [heroImages, setHeroImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   
-  const handleMockTestClick = () => {
-    navigate('/quiz');
+  const handleGetStarted = () => {
+    navigate('/register');
   };
 
-  // Fetch banner images from API
-  useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch('https://api.vidyavani.com/api/get/hero-banners');
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch banners: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        
-        if (result.data && Array.isArray(result.data) && result.data.length > 0) {
-          setHeroImages(result.data);
-        } else {
-          // Fallback images in case API returns empty data
-          setHeroImages([ 
-            {
-              title: "Default Banner 1",
-              desktop: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-              mobile: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-              url: "https://www.example.com/banner1"
-            },
-            {
-              title: "Default Banner 2",
-              desktop: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-              mobile: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-              url: "https://www.example.com/banner2"
-            }
-          ]);
-        }
-      } catch (err) {
-        console.error("Error fetching banner images:", err);
-        setError(err.message);
-        // Set fallback images
-        setHeroImages([
-          {
-            title: "Default Banner 1",
-            desktop: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-            mobile: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-            url: "https://www.example.com/banner1"
-          },
-          {
-            title: "Default Banner 2",
-            desktop: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-            mobile: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-            url: "https://www.example.com/banner2"
-          }
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchBanners();
-  }, []);
-
-  // Automatic image change every 5 seconds
-  useEffect(() => {
-    if (heroImages.length === 0) return;
-    
-    const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
-
-  // Manual navigation functions
-  const goToPrevious = (e) => {
-    e.stopPropagation(); // Prevent banner click when clicking navigation
-    if (heroImages.length === 0) return;
-    setCurrentImage((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
+  const handleStartLearning = () => {
+    navigate('/study-materials');
   };
 
-  const goToNext = (e) => {
-    e.stopPropagation(); // Prevent banner click when clicking navigation
-    if (heroImages.length === 0) return;
-    setCurrentImage((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
-  };
-
-  // Direct navigation to banner URL or Google.com as fallback
-  const handleBannerClick = (banner) => {
-    // Add debugging information
-    console.log("Banner clicked with ID:", banner._id);
-    console.log("Banner title:", banner.title);
-    console.log("Banner URL property exists:", banner.hasOwnProperty('url'));
-    console.log("Banner URL value:", banner.url);
-    
-    // Check if the banner has a URL
-    if (banner && banner.hasOwnProperty('url') && banner.url && banner.url.trim() !== '') {
-      // Open the banner's specific URL in a new tab
-      console.log("Redirecting to banner URL:", banner.url);
-      window.open(banner.url, '_blank');
-    } else {
-      // If no URL is provided, open Google.com as fallback in a new tab
-      console.log("No valid URL found, redirecting to Google.com");
-      window.open('https://www.google.com', '_blank');
-    }
-  };
-
-  // Show loading state
-  if (isLoading) {
     return (
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 py-0 mt-0">
+    <div className="bg-white">
                 <NotificationBanner url="https://woxsen.edu.in/apply" />
 
-        {/* Loading content */}
-        <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
-          <div className="flex items-center gap-2">
-            <Award className="w-5 h-5" />
-            <span className="font-medium">Vidyavani  Means Toppers Choice</span>
-          </div>
+      {/* Main Hero Section */}
+      <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white min-h-screen flex items-center relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white rounded-full"></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-white rounded-full"></div>
+          <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full"></div>
+          <div className="absolute bottom-40 right-10 w-8 h-8 bg-white rounded-full"></div>
         </div>
         
-        <div className="bg-blue-600 text-white text-center py-2 px-4 md:hidden">
-          <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
+        <div className="container mx-auto px-4 py-20">
+          <div className="flex flex-col lg:flex-row items-center justify-between">
+            {/* Left Content */}
+            <div className="lg:w-1/2 mb-12 lg:mb-0">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                Build your online brand <br />
+                <span className="text-cyan-300">identity with Vidyavani</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
+                Get your own brand's teaching app, create your own website & sell courses
+              </p>
+
+              {/* Stats */}
+              <div className="flex flex-wrap gap-8 mb-8">
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-cyan-300">3,300+</div>
+                  <div className="text-blue-200">Cities</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-cyan-300">1 Lakh+</div>
+                  <div className="text-blue-200">Teachers</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-cyan-300">5 Crore+</div>
+                  <div className="text-blue-200">Students</div>
+                </div>
+              </div>
+
+              <button
+                onClick={handleGetStarted}
+                className="bg-cyan-400 text-blue-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-cyan-300 transition-all transform hover:scale-105 shadow-lg inline-flex items-center"
+              >
+                Get Started
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </button>
         </div>
         
-        {/* Add the Notification Banner after the top banners */}
-        
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center h-32">
-            <div className="animate-pulse text-blue-600">Loading banners...</div>
+            {/* Right Content - Image/Illustration */}
+            <div className="lg:w-1/2 flex justify-center lg:justify-end">
+              <div className="relative">
+                <div className="w-80 h-80 lg:w-96 lg:h-96 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-2xl">
+                  <div className="text-center">
+                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mb-4 mx-auto">
+                      <Users className="w-16 h-16 text-blue-600" />
+                    </div>
+                    <p className="text-white font-semibold text-lg">Join Millions of Learners</p>
+                  </div>
+                </div>
+                
+                {/* Floating Elements */}
+                <div className="absolute -top-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
+                  <BookOpen className="w-8 h-8 text-blue-600" />
+                </div>
+                <div className="absolute -bottom-4 -left-4 bg-white p-4 rounded-lg shadow-lg">
+                  <Award className="w-8 h-8 text-cyan-500" />
           </div>
         </div>
       </div>
-    );
-  }
-
-  // Show error state
-  if (error && heroImages.length === 0) {
-    return (
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 py-0 mt-0">
-                <NotificationBanner url="https://woxsen.edu.in/apply" />
-
-        {/* Error content */}
-        <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
-          <div className="flex items-center gap-2">
-            <Award className="w-5 h-5" />
-            <span className="font-medium">Vidyavani  Means Toppers Choice</span>
           </div>
         </div>
         
-        <div className="bg-blue-600 text-white text-center py-2 px-4 md:hidden">
-          <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
-        </div>
-        
-        {/* Add the Notification Banner after the top banners */}
-        
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center h-32 text-red-500">
-            <p>Error loading banners: {error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 py-0 md:py-0 mt-0">
-            <NotificationBanner url="https://woxsen.edu.in/apply" />
-
-      {/* Top banner to fill the gap - visible on all screens */}
-      <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
-        <div className="flex items-center gap-2">
-          <Award className="w-5 h-5" />
-          <span className="font-medium">Adhyan dot Guru Means Toppers Choice</span>
-          <span className="hidden md:inline">| Access Free Study Materials</span>
-        </div>
-      </div>
-      
-      {/* Specific mobile announcement banner */}
-      <div className="bg-blue-600 text-white text-center py-2 px-4 md:hidden">
-        <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
-      </div>
-      
-      {/* Add the Notification Banner after the top banners */}
-      
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center">
-          {/* Text content - First on mobile, left on desktop */}
-          <div className="w-full md:w-1/3 mb-4 md:mb-0 order-1 md:order-1">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-700">
-            India's <span className="text-blue-600">#No.1</span> Best Free Online Learning Platform
-            </h1>
-            <p className="text-gray-600 mb-2">
-              <span className="text-yellow-600 font-semibold">Get Free Access of all Toppers Notes, HandWritten Notes, PYQ'S, NCERT TextBooks, NCERT Solutions & Many More.</span>
-            </p>
-
-            <p className="text-lg mb-4 text-gray-700">
-            Trusted By More Than <span className="text-blue-600 font-bold">3Cr+ Students & Educators.</span>
-            </p>
+        {/* Call to Action Overlay */}
+        <div className="absolute bottom-0 right-0 bg-cyan-400 text-blue-900 p-10 mr-10 rounded-3xl">
+          <p className="text-lg font-semibold mb-2">Ready to take the first step? Choose what best defines you</p>
+          <div className="space-y-2">
             <button 
-              onClick={handleMockTestClick}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 flex items-center transform transition-all duration-300 hover:scale-105 shadow-md"
+              onClick={() => navigate('/register')}
+              className="block w-full bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              <GraduationCap className="mr-2" />
-              FREE - Mock Test
+              I run a coaching centre
+            </button>
+            <button 
+              onClick={() => navigate('/register')}
+              className="block w-full bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              I am a YouTuber
+            </button>
+            <button 
+              onClick={() => navigate('/register')}
+              className="block w-full bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              I teach in a school
+            </button>
+            <button 
+              onClick={() => navigate('/register')}
+              className="block w-full bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              I am a student
             </button>
           </div>
+        </div>
+        </div>
+        
+      {/* Features Section */}
+      <div className="bg-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
+              Simplify your teaching <br />
+              <span className="text-cyan-500">with our best features</span>
+            </h2>
+          </div>
 
-          {/* Image Carousel - Second on mobile, right on desktop */}
-          <div className="w-full md:w-2/3 relative rounded-lg overflow-hidden shadow-xl order-2 md:order-2 mt-4 md:mt-0">
-            <div className="relative overflow-hidden w-full" style={{ paddingBottom: "40%" }}>
-              {heroImages.map((image, index) => {
-                // Only render the current image to avoid multiple click handlers
-                return (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
-                      index === currentImage ? 'opacity-100 z-10' : 'opacity-0 -z-10'
-                    }`}
-                  >
-                    {/* Banner container - clickable area */}
-                    {index === currentImage && (
-                      <div 
-                        className="block w-full h-full cursor-pointer"
-                        onClick={() => handleBannerClick(heroImages[currentImage])}
-                        data-campid={image._id || "banner"}
-                        data-source="slider"
-                        data-index={index}
-                      >
-                        {/* Mobile image */}
-                        <img
-                          src={image.mobile}
-                          alt={image.title || `Banner ${index + 1}`}
-                          className="w-full h-full object-cover md:hidden"
-                        />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="text-center p-8 bg-blue-50 rounded-2xl hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <BookOpen className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-900 mb-2">Own Branded App</h3>
+              <p className="text-blue-600">Create your personalized learning app with your brand identity</p>
+            </div>
 
-                        {/* Desktop image */}
-                        <img
-                          src={image.desktop}
-                          alt={image.title || `Banner ${index + 1}`}
-                          className="w-full h-full object-cover hidden md:block"
-                        />
+            {/* Feature 2 */}
+            <div className="text-center p-8 bg-blue-50 rounded-2xl hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-900 mb-2">Own Branded Website</h3>
+              <p className="text-blue-600">Build your professional website to reach more students</p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="text-center p-8 bg-blue-50 rounded-2xl hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Award className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-900 mb-2">Sell Your Courses</h3>
+              <p className="text-blue-600">Monetize your knowledge by selling courses online</p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="text-center p-8 bg-blue-50 rounded-2xl hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Play className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-900 mb-2">Take Live Classes</h3>
+              <p className="text-blue-600">Conduct interactive live sessions with your students</p>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="text-center p-8 bg-blue-50 rounded-2xl hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-900 mb-2">Create Online Tests</h3>
+              <p className="text-blue-600">Design assessments to evaluate student progress</p>
+            </div>
+
+            {/* Feature 6 */}
+            <div className="text-center p-8 bg-blue-50 rounded-2xl hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Award className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-900 mb-2">100% Content Security</h3>
+              <p className="text-blue-600">Keep your content safe with advanced security measures</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+            {/* Mobile App Launch Section - Card Style like Classplus */}
+      <div className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          {/* Card Container */}
+          <div className="bg-gradient-to-r from-cyan-100 to-cyan-50 rounded-3xl shadow-xl overflow-hidden max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-center">
+              {/* Left Content - Mobile App Mockup */}
+              <div className="lg:w-1/2 p-8 lg:p-12">
+                <div className="relative max-w-sm mx-auto lg:mx-0">
+                  {/* Phone Frame */}
+                  <div className="relative">
+                    {/* Phone Outline */}
+                    <div className="w-72 h-[500px] bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+                      {/* Screen */}
+                      <div className="w-full h-full bg-white rounded-[2rem] overflow-hidden relative">
+                        {/* Status Bar */}
+                        <div className="bg-blue-600 h-10 flex items-center justify-between px-4 text-white text-xs">
+                          <span>9:41</span>
+                          <span>●●●</span>
+                        </div>
+                        
+                        {/* App Header */}
+                        <div className="bg-gradient-to-r from-blue-500 to-cyan-400 p-3">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                              <BookOpen className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <h3 className="text-white font-semibold text-sm">Your Branded App</h3>
+                              <p className="text-blue-100 text-xs">Education Platform</p>
+                            </div>
+        </div>
+      </div>
+      
+                        {/* App Content */}
+                        <div className="p-3 space-y-3">
+                          {/* Feature Cards */}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="bg-blue-50 p-2 rounded-lg text-center">
+                              <div className="w-6 h-6 bg-blue-500 rounded-lg mx-auto mb-1 flex items-center justify-center">
+                                <Users className="w-3 h-3 text-white" />
+                              </div>
+                              <p className="text-xs font-medium text-blue-900">Students</p>
+                            </div>
+                            <div className="bg-green-50 p-2 rounded-lg text-center">
+                              <div className="w-6 h-6 bg-green-500 rounded-lg mx-auto mb-1 flex items-center justify-center">
+                                <BookOpen className="w-3 h-3 text-white" />
+                              </div>
+                              <p className="text-xs font-medium text-green-900">Courses</p>
+                            </div>
+                            <div className="bg-purple-50 p-2 rounded-lg text-center">
+                              <div className="w-6 h-6 bg-purple-500 rounded-lg mx-auto mb-1 flex items-center justify-center">
+                                <Play className="w-3 h-3 text-white" />
+                              </div>
+                              <p className="text-xs font-medium text-purple-900">Live Classes</p>
+                            </div>
+                            <div className="bg-orange-50 p-2 rounded-lg text-center">
+                              <div className="w-6 h-6 bg-orange-500 rounded-lg mx-auto mb-1 flex items-center justify-center">
+                                <Award className="w-3 h-3 text-white" />
+                              </div>
+                              <p className="text-xs font-medium text-orange-900">Certificates</p>
+                            </div>
+      </div>
+      
+                          {/* Progress Section */}
+                          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-3 rounded-lg">
+                            <h4 className="font-semibold text-blue-900 mb-1 text-sm">Learning Progress</h4>
+                            <div className="space-y-1">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-blue-700">Mathematics</span>
+                                <span className="text-blue-700">75%</span>
+                              </div>
+                              <div className="w-full bg-blue-200 rounded-full h-1.5">
+                                <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: '75%' }}></div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Achievement Badge */}
+                          <div className="bg-yellow-50 border border-yellow-200 p-2 rounded-lg flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                              <Award className="w-3 h-3 text-yellow-800" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-yellow-800">Achievement!</p>
+                              <p className="text-xs text-yellow-600">Course Complete</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Bottom Navigation */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2">
+                          <div className="flex justify-around">
+                            <div className="text-center">
+                              <div className="w-4 h-4 bg-blue-500 rounded mx-auto mb-1"></div>
+                              <span className="text-xs text-blue-500">Home</span>
+                            </div>
+                            <div className="text-center">
+                              <div className="w-4 h-4 bg-gray-300 rounded mx-auto mb-1"></div>
+                              <span className="text-xs text-gray-500">Courses</span>
+                            </div>
+                            <div className="text-center">
+                              <div className="w-4 h-4 bg-gray-300 rounded mx-auto mb-1"></div>
+                              <span className="text-xs text-gray-500">Profile</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    )}
+          </div>
+
+                    {/* Floating Hand Gesture */}
+                    <div className="absolute -bottom-6 -left-6">
+                      <div className="w-12 h-16 bg-gradient-to-br from-pink-300 to-pink-400 rounded-t-full rounded-bl-full transform rotate-12">
+                        {/* Simple hand representation */}
+                        <div className="absolute top-1 left-2 w-2 h-2 bg-pink-200 rounded-full"></div>
+                        <div className="absolute top-0 left-4 w-1.5 h-3 bg-pink-200 rounded-full"></div>
+                        <div className="absolute top-0 left-6 w-1.5 h-4 bg-pink-200 rounded-full"></div>
+                        <div className="absolute top-0 left-8 w-1.5 h-3 bg-pink-200 rounded-full"></div>
+                      </div>
+                    </div>
                   </div>
-                );
-              })}
-
-              {/* Navigation buttons */}
-              <button
-                onClick={goToPrevious}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md z-20 text-blue-600 transition-all duration-200 hover:scale-110"
-                aria-label="Previous banner"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={goToNext}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md z-20 text-blue-600 transition-all duration-200 hover:scale-110"
-                aria-label="Next banner"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-
-              {/* Indicator dots */}
-              {heroImages.length > 1 && (
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1.5 z-20">
-                  {heroImages.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent banner click when clicking indicators
-                        setCurrentImage(index);
-                      }}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        index === currentImage ? 'bg-white scale-125' : 'bg-white/50'
-                      }`}
-                      aria-label={`Go to banner ${index + 1}`}
-                    ></button>
-                  ))}
                 </div>
-              )}
+              </div>
+
+              {/* Right Content */}
+              <div className="lg:w-1/2 p-8 lg:p-12">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-blue-900 mb-6 leading-tight">
+                  Are you excited to launch <br />
+                  <span className="text-blue-600">your branded app?</span>
+                </h2>
+                <p className="text-lg text-blue-800 mb-8 leading-relaxed">
+                  Transform your teaching with a personalized app that carries your brand identity and helps you reach more students effectively.
+                </p>
+                
+              <button
+                  onClick={handleGetStarted}
+                  className="group bg-blue-900 text-white px-10 py-4 rounded-xl text-lg font-semibold hover:bg-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg inline-flex items-center relative overflow-hidden"
+                >
+                  <span className="relative z-10">Click here</span>
+                  <ArrowRight className="ml-3 w-6 h-6 relative z-10 transform transition-transform group-hover:translate-x-1" />
+                  
+                  {/* Hover effect overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-800 to-blue-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              </button>
+                </div>
             </div>
           </div>
         </div>

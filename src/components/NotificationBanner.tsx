@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-const NotificationBanner = () => {
+interface SponsorData {
+  name: string;
+  url: string;
+  contextColor: string;
+}
+
+interface NotificationBannerProps {
+  url?: string;
+}
+
+const NotificationBanner: React.FC<NotificationBannerProps> = ({ url }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const [sponsorData, setSponsorData] = useState(null);
+  const [sponsorData, setSponsorData] = useState<SponsorData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSponsorData = async () => {
@@ -23,7 +33,7 @@ const NotificationBanner = () => {
           setSponsorData(data[0]);
         }
       } catch (err) {
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'An error occurred');
         console.error('Error fetching sponsor data:', err);
       } finally {
         setIsLoading(false);
@@ -33,14 +43,15 @@ const NotificationBanner = () => {
     fetchSponsorData();
   }, []);
 
-  const handleClose = (e) => {
+  const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent redirection when clicking the close button
     setIsVisible(false);
   };
 
   const handleClick = () => {
-    if (sponsorData && sponsorData.url) {
-      window.open(sponsorData.url, '_blank');
+    const targetUrl = url || (sponsorData && sponsorData.url);
+    if (targetUrl) {
+      window.open(targetUrl, '_blank');
     }
   };
 
@@ -48,7 +59,7 @@ const NotificationBanner = () => {
   if (!isVisible || isLoading || error || !sponsorData) return null;
 
   // Create style for using the hex color directly as background
-  const bannerStyle = {
+  const bannerStyle: React.CSSProperties = {
     backgroundColor: sponsorData.contextColor,
   };
 
@@ -76,4 +87,4 @@ const NotificationBanner = () => {
   );
 };
 
-export default NotificationBanner;
+export default NotificationBanner; 
