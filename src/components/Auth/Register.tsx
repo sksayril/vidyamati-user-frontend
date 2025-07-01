@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Logo2 from "../../../public/logo2.jpeg";
 import { useAuth } from '../../contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, BookOpen, GraduationCap, Sparkles, ArrowRight, User, Phone, ChevronDown } from 'lucide-react';
@@ -173,15 +174,22 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Background decorative elements */}
+    <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Full Background Image with Mascot */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+        <img 
+          src={Logo2} 
+          alt='VidyaVani Mascot Background' 
+          className='absolute inset-0 w-full h-full object-cover object-center'
+        />
+        {/* Overlay for better form readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-blue-800/30 to-purple-900/40"></div>
+        {/* Additional overlay on the left side where form will be */}
+        <div className="absolute inset-y-0 left-0 w-full lg:w-1/2"></div>
       </div>
 
       <motion.div 
-        className="relative w-full max-w-md"
+        className="relative w-full max-w-md z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -204,11 +212,12 @@ const Register: React.FC = () => {
           <p className="text-gray-600 text-sm">
             Create your account to access premium study materials
           </p>
+         
         </motion.div>
 
         {/* Register Form Card */}
         <motion.div 
-          className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8"
+          className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 relative z-10"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -233,6 +242,7 @@ const Register: React.FC = () => {
           )}
           
           <form className="space-y-6" onSubmit={handleSubmit}>
+            
             {/* Full Name Field */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -254,7 +264,7 @@ const Register: React.FC = () => {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -281,7 +291,7 @@ const Register: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm"
                   placeholder="Enter your email"
                 />
               </div>
@@ -308,7 +318,7 @@ const Register: React.FC = () => {
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm"
                   placeholder="Enter your phone number"
                 />
               </div>
@@ -333,7 +343,7 @@ const Register: React.FC = () => {
                   required
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm appearance-none"
+                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm appearance-none"
                 >
                   <option value="">Select your study category</option>
                   {categoriesLoading ? (
@@ -374,7 +384,7 @@ const Register: React.FC = () => {
                   value={selectedSubCategory}
                   onChange={(e) => setSelectedSubCategory(e.target.value)}
                   disabled={!selectedCategory || subCategoriesLoading}
-                  className={`block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm appearance-none ${
+                  className={`block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm appearance-none ${
                     !selectedCategory || subCategoriesLoading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -423,7 +433,7 @@ const Register: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm"
                   placeholder="Enter your password"
                 />
                 <button
@@ -461,7 +471,7 @@ const Register: React.FC = () => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -547,12 +557,12 @@ const Register: React.FC = () => {
 
         {/* Features Section */}
         <motion.div 
-          className="mt-8 text-center"
+          className="mt-8 text-center bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.3 }}
         >
-          <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+          <div className="flex items-center justify-center space-x-6 text-sm text-gray-700">
             <div className="flex items-center">
               <Sparkles className="h-4 w-4 text-blue-500 mr-1" />
               <span>Premium Content</span>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Logo2 from "../../../public/logo2.jpeg";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { motion } from 'framer-motion';
@@ -45,15 +46,20 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Background decorative elements */}
+    <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Full Background Image with Mascot */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+        <img 
+          src={Logo2} 
+          alt='VidyaVani Mascot Background' 
+          className='absolute inset-0 w-full h-full object-cover object-center'
+        />
+        {/* Overlay for better form readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-blue-800/30 to-purple-900/40"></div>
       </div>
 
       <motion.div 
-        className="relative w-full max-w-md"
+        className="relative w-full max-w-md z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -80,7 +86,7 @@ const Login: React.FC = () => {
 
         {/* Login Form Card */}
         <motion.div 
-          className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8"
+          className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 relative z-10"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -126,7 +132,7 @@ const Login: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm"
                   placeholder="Enter your email"
                 />
               </div>
@@ -153,7 +159,7 @@ const Login: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm"
                   placeholder="Enter your password"
                 />
                 <button
@@ -213,7 +219,7 @@ const Login: React.FC = () => {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white/80 text-gray-500">
+                <span className="px-2 bg-white/95 text-gray-500">
                   Don't have an account?
                 </span>
               </div>
@@ -239,12 +245,12 @@ const Login: React.FC = () => {
 
         {/* Features Section */}
         <motion.div 
-          className="mt-8 text-center"
+          className="mt-8 text-center bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+          <div className="flex items-center justify-center space-x-6 text-sm text-gray-700">
             <div className="flex items-center">
               <Sparkles className="h-4 w-4 text-blue-500 mr-1" />
               <span>Premium Content</span>

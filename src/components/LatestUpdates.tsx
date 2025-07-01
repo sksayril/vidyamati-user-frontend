@@ -49,7 +49,7 @@ const LatestUpdates = () => {
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch updates:", err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'Failed to fetch updates');
         setLoading(false);
       }
     };
@@ -65,7 +65,7 @@ const LatestUpdates = () => {
         if (scrollRef.current) {
           const nextCard = scrollRef.current.children[
             (activeIndex + 1) % updates.length
-          ];
+          ] as HTMLElement;
           if (nextCard) {
             scrollRef.current.scrollTo({
               left: nextCard.offsetLeft - 20,
@@ -94,7 +94,7 @@ const LatestUpdates = () => {
     if (scrollRef.current) {
       const prevCard = scrollRef.current.children[
         activeIndex === 0 ? updates.length - 1 : activeIndex - 1
-      ];
+      ] as HTMLElement;
       if (prevCard) {
         scrollRef.current.scrollTo({
           left: prevCard.offsetLeft - 20,
@@ -115,7 +115,7 @@ const LatestUpdates = () => {
     if (scrollRef.current) {
       const nextCard = scrollRef.current.children[
         (activeIndex + 1) % updates.length
-      ];
+      ] as HTMLElement;
       if (nextCard) {
         scrollRef.current.scrollTo({
           left: nextCard.offsetLeft - 20,
@@ -125,7 +125,7 @@ const LatestUpdates = () => {
     }
   };
 
-  const openUpdateModal = (update) => {
+  const openUpdateModal = (update: Update) => {
     setSelectedUpdate(update);
     document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
   };
@@ -339,21 +339,22 @@ const LatestUpdates = () => {
         </div>
       </div>
 
-      {/* Update Modal Popup - Responsive */}
+      {/* Update Modal Popup - Enhanced Mobile Responsive */}
       {selectedUpdate && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-2 md:p-4 animate-fadeIn" onClick={closeUpdateModal}>
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-[60] flex items-center justify-center p-2 md:p-4 animate-fadeIn" onClick={closeUpdateModal}>
           <div
-            className="bg-white rounded-xl overflow-hidden w-full max-w-4xl max-h-[90vh] flex flex-col animate-scaleIn"
+            className="bg-white w-full max-w-full sm:max-w-4xl max-h-[95vh] sm:max-h-[90vh] flex flex-col animate-scaleIn relative sm:rounded-xl overflow-y-auto overscroll-contain touch-manipulation scrollbar-none"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header with close button */}
-            <div className="flex justify-between items-center p-3 md:p-4 border-b">
-              <h2 className="text-base md:text-xl font-bold line-clamp-1">{selectedUpdate.title}</h2>
+            {/* Modal Header with enhanced close button */}
+            <div className="flex justify-between items-center p-4 md:p-4 border-b bg-white sticky top-0 z-10">
+              <h2 className="text-base md:text-xl font-bold line-clamp-1 pr-4 flex-1">{selectedUpdate.title}</h2>
               <button
                 onClick={closeUpdateModal}
-                className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                className="flex-shrink-0 p-3 md:p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+                aria-label="Close modal"
               >
-                <X className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
+                <X className="w-6 h-6 md:w-6 md:h-6 text-gray-700" />
               </button>
             </div>
 

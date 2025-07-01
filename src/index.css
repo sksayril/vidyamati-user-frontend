@@ -73,6 +73,11 @@
     background-color: currentColor;
     animation: blink 1s infinite;
   }
+
+  /* Touch manipulation for better mobile interaction */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
 }
 
 /* Enhanced Markdown styling for AI Teacher */
