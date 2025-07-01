@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, ArrowRight, CheckCircle, Users, BookOpen, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Home from "../../public/homepic.jpg";
 import NotificationBanner from './NotificationBanner';
 
 const Hero = () => {
@@ -69,14 +70,19 @@ const Hero = () => {
             {/* Right Content - Image/Illustration */}
             <div className="lg:w-1/2 flex justify-center lg:justify-end">
               <div className="relative">
-                <div className="w-80 h-80 lg:w-96 lg:h-96 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-2xl">
                   <div className="text-center">
-                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mb-4 mx-auto">
-                      <Users className="w-16 h-16 text-blue-600" />
+                    <div className="w-52 h-52 rounded-full flex items-center justify-center mb-4 mx-auto bg-gradient-to-br from-cyan-400 via-blue-400 to-purple-400 p-1 shadow-2xl hover:scale-105 transition-transform duration-300">
+                      <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+                        <img
+                          src={Home}
+                          alt="Home"
+                          className="w-48 h-48 md:w-52 md:h-52 object-cover object-center rounded-full shadow-2xl"
+                        />
+                      </div>
                     </div>
                     <p className="text-white font-semibold text-lg">Join Millions of Learners</p>
                   </div>
-                </div>
+                
                 
                 {/* Floating Elements */}
                 <div className="absolute -top-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
